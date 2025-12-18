@@ -12,9 +12,9 @@ fun MainScreen() {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            MyAppBar() // <-- Usamos el nuevo componente
+            MyAppBar()
         }
     ) { innerPadding ->
-        AppContent(innerPadding = innerPadding) // <-- Usamos el nuevo componente
+        AppContent(innerPadding = innerPadding)
     }
 }

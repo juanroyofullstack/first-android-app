@@ -15,14 +15,14 @@ import androidx.compose.ui.unit.dp
 fun AppContent(innerPadding: PaddingValues) {
     Column(
         modifier = Modifier
-            .padding(innerPadding) // Aplica el padding del Scaffold
+            .padding(innerPadding)
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp) // Padding interno adicional
+            .padding(16.dp)
     ) {
         Text(
             text = "Contenido de ejemplo"
         )
-        // Aquí podrías añadir más elementos de UI
+        ImageWelcome()
     }
 }
