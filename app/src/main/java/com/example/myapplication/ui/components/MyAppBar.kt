@@ -5,18 +5,17 @@ import androidx.compose.runtime.Composable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyAppBar() {
+fun MyAppBar(
+    onOption1: () -> Unit = {},
+    onOption2: () -> Unit = {}
+) {
 
     TopAppBar(
         title = { Text("Mi Header") },
         navigationIcon = {
             HamburgerMenu(
-                onOption1 = {
-                    print("Hola 1")
-                },
-                onOption2 = {
-                    println("Hola 2")
-                },
+                onOption1,
+                onOption2,
             )
         },
         colors = TopAppBarDefaults.topAppBarColors(
