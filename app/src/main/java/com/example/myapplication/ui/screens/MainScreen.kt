@@ -9,7 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.example.myapplication.ui.components.AppContent
-import com.example.myapplication.ui.components.MyAppBar
+import com.example.myapplication.ui.components.Header
 
 enum class Screen { Home, Second }
 
@@ -21,7 +21,7 @@ fun MainScreen() {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            MyAppBar(onOption1 = {
+            Header(onOption1 = {
                 setCurrentScreen(Screen.Home)
             }, onOption2 = {
                 setCurrentScreen(Screen.Second)

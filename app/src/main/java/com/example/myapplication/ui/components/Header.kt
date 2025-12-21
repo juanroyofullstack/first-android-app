@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyAppBar(
+fun Header(
     onOption1: () -> Unit = {},
     onOption2: () -> Unit = {}
 ) {
