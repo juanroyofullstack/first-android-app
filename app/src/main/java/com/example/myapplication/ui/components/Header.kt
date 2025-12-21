@@ -11,7 +11,7 @@ fun Header(
 ) {
 
     TopAppBar(
-        title = { Text("Mi Header") },
+        title = { Text("Mi Primera App Android") },
         navigationIcon = {
             HamburgerMenu(
                 onOption1,

@@ -24,7 +24,7 @@ fun HamburgerMenu(
     var expanded by remember { mutableStateOf(false) }
 
     Box {
-        IconButton(onClick = { expanded = true }) {
+        IconButton(onClick = { expanded = !expanded }) {
             Icon(
                 imageVector = Icons.Default.Menu,
                 contentDescription = "Menú hamburguesa"
@@ -32,18 +32,18 @@ fun HamburgerMenu(
         }
 
         DropdownMenu(
-            expanded = expanded,
+            expanded,
             onDismissRequest = { expanded = false }
         ) {
             DropdownMenuItem(
-                text = { Text("Opción 1") },
+                text = { Text("Home") },
                 onClick = {
                     onOption1()
                     expanded = false
                 }
             )
             DropdownMenuItem(
-                text = { Text("Opción 2") },
+                text = { Text("Segunda vista") },
                 onClick = {
                     onOption2()
                     expanded = false
