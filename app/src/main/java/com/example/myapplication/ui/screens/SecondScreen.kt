@@ -18,9 +18,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.ui.theme.MyApplicationTheme
+import com.example.myapplication.model.NewsResponse
 
 @Composable
-fun SecondScreen(modifier: Modifier = Modifier) {
+fun SecondScreen(modifier: Modifier = Modifier, news: NewsResponse? = null) {
     Surface(modifier = modifier.padding(16.dp)) {
         Column(modifier = Modifier
             .fillMaxWidth()
@@ -28,18 +29,23 @@ fun SecondScreen(modifier: Modifier = Modifier) {
             .verticalScroll(rememberScrollState())
         ) {
             Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "Jetpack Compose Revoluciona el Desarrollo en Android",
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold
-            )
+            val firstArticle = news?.articles?.getOrNull(0)
+            val title = firstArticle?.title
+
+            if (!title.isNullOrBlank()) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.headlineLarge,
+                    fontWeight = FontWeight.Bold
+                )
+            }
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "El nuevo framework declarativo de Google promete interfaces más rápidas y código más limpio.",
+                text = news?.articles[0]?.author ?: "Cargando...",
                 style = MaterialTheme.typography.titleMedium
             )
             Text(
-                text = "Por Juan Royo | Publicado el 21 de diciembre de 2025",
+                text = news?.articles[0]?.author?: "Cargando...",
                 style = MaterialTheme.typography.bodySmall,
                 color = Color.Gray
             )

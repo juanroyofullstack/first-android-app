@@ -11,22 +11,44 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import android.util.Log
 import com.example.myapplication.ui.components.AppContent
 import com.example.myapplication.ui.components.Header
 import com.example.myapplication.BuildConfig
+import com.example.myapplication.model.NewsResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.net.HttpURLConnection
-import java.net.URL
+import kotlinx.serialization.json.Json
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.logging.HttpLoggingInterceptor
 
-val apiKey = BuildConfig.API_KEY
-private suspend fun fetchLatestNews(): String = withContext(Dispatchers.IO) {
-    val connection = URL("https://gnews.io/api/v4/search?q=Google&lang=en&max=5&apikey=$apiKey").openConnection() as HttpURLConnection
-    connection.inputStream.bufferedReader().use { it.readText() }
+private val json = Json { ignoreUnknownKeys = true }
+
+private val logging = HttpLoggingInterceptor().apply {
+    level = HttpLoggingInterceptor.Level.BODY
+}
+
+private val client = OkHttpClient.Builder()
+    .addInterceptor(logging)
+    .build()
+
+private val apiKey = BuildConfig.API_KEY
+
+private suspend fun fetchLatestNews(): NewsResponse = withContext(Dispatchers.IO) {
+    Log.d("NewsFetch", "Llamando a gnews con OkHttp")
+    val request = Request.Builder()
+        .url("https://gnews.io/api/v4/search?q=Google&lang=en&max=5&apikey=$apiKey")
+        .build()
+
+    client.newCall(request).execute().use { response ->
+        if (!response.isSuccessful) error("Unexpected code $response")
+        val body = response.body?.string().orEmpty()
+        json.decodeFromString<NewsResponse>(body)
+    }
 }
 
 enum class Screen { Home, Second }
@@ -35,15 +57,20 @@ enum class Screen { Home, Second }
 @Composable
 fun MainScreen() {
     val (currentScreen, setCurrentScreen) = remember { mutableStateOf(Screen.Home) }
-    var news by rememberSaveable { mutableStateOf<String?>(null) }
+    var news by rememberSaveable { mutableStateOf<NewsResponse?>(null) }
     var loading by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         loading = true
-        news = runCatching { fetchLatestNews() }.getOrNull()
-        print(news)
+        val result = runCatching { fetchLatestNews() }
+            .onFailure { e -> Log.e("MainScreen", "Error al obtener news", e) }
+            .getOrNull()
+        Log.d("MainScreen", "Resultado fetch: $result")
+        news = result
         loading = false
+        Log.d("MainScreen", "Estado final -> loading=$loading, news=${news}")
     }
+    print(news)
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -58,11 +85,19 @@ fun MainScreen() {
         when (currentScreen) {
             Screen.Home -> AppContent(innerPadding)
             Screen.Second -> {
-                SecondScreen(Modifier.padding(innerPadding))
+                Log.d("MainScreen", "Entrando en Screen.Second, loading=$loading, news=$news")
                 when {
-                    loading -> CircularProgressIndicator()
-                    news != null -> Text(news!!)
-                    else -> Text("No se pudo cargar la noticia")
+                    loading -> {
+                        CircularProgressIndicator()
+                    }
+                    news != null -> {
+                        Log.d("MainScreen", "Mostrando SecondScreen con news")
+                        SecondScreen(
+                            modifier = Modifier.padding(innerPadding),
+                            news = news
+                        )
+                    }
+                    else -> Text("No se pudo cargar la nonewsticia")
                 }
             }
         }
