@@ -15,13 +15,13 @@ data class NewsItem(
     val id: String,
     val title: String,
     val description: String,
-    val author: String? = null,
-    val date: String? = null,
     val url: String,
     val image: String,
     val publishedAt: String,
     val lang: String,
     val source: Source,
+    val author: String? = null,
+    val date: String? = null,
 )
 
 @Serializable

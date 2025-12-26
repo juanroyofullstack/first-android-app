@@ -29,7 +29,9 @@ import okhttp3.logging.HttpLoggingInterceptor
 private val json = Json { ignoreUnknownKeys = true }
 
 private val logging = HttpLoggingInterceptor().apply {
-    level = HttpLoggingInterceptor.Level.BODY
+    if(BuildConfig.DEBUG) {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
 }
 
 private val client = OkHttpClient.Builder()
@@ -45,13 +47,13 @@ private suspend fun fetchLatestNews(): NewsResponse = withContext(Dispatchers.IO
         .build()
 
     client.newCall(request).execute().use { response ->
-        if (!response.isSuccessful) error("Unexpected code $response")
+        if (!response.isSuccessful) error("HTTP error ${response.code}: ${response.message}")
         val body = response.body?.string().orEmpty()
         json.decodeFromString<NewsResponse>(body)
     }
 }
 
-enum class Screen { Home, Second }
+enum class Screen { Home, News }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,39 +67,35 @@ fun MainScreen() {
         val result = runCatching { fetchLatestNews() }
             .onFailure { e -> Log.e("MainScreen", "Error al obtener news", e) }
             .getOrNull()
-        Log.d("MainScreen", "Resultado fetch: $result")
         news = result
         loading = false
-        Log.d("MainScreen", "Estado final -> loading=$loading, news=${news}")
     }
-    print(news)
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            Header(onOption1 = {
+            Header(
+            onOption1 = {
                 setCurrentScreen(Screen.Home)
             }, onOption2 = {
-                setCurrentScreen(Screen.Second)
+                setCurrentScreen(Screen.News)
             })
         }
     ) { innerPadding ->
         when (currentScreen) {
             Screen.Home -> AppContent(innerPadding)
-            Screen.Second -> {
-                Log.d("MainScreen", "Entrando en Screen.Second, loading=$loading, news=$news")
+            Screen.News -> {
                 when {
                     loading -> {
                         CircularProgressIndicator()
                     }
-                    news != null -> {
-                        Log.d("MainScreen", "Mostrando SecondScreen con news")
+                    news?.articles?.firstOrNull() != null -> {
                         SecondScreen(
                             modifier = Modifier.padding(innerPadding),
-                            news = news
+                            news = news?.articles[0]
                         )
                     }
-                    else -> Text("No se pudo cargar la nonewsticia")
+                    else -> Text("No se pudo cargar la noticia")
                 }
             }
         }
