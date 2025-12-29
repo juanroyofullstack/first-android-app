@@ -20,7 +20,7 @@ import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.model.NewsItem
 
 @Composable
-fun SecondScreen(modifier: Modifier = Modifier, news: NewsItem? = null) {
+fun NewsDetail(modifier: Modifier = Modifier, news: NewsItem? = null) {
     Surface(modifier = modifier.padding(16.dp)) {
         Column(modifier = Modifier
             .fillMaxWidth()
@@ -59,6 +59,6 @@ fun SecondScreen(modifier: Modifier = Modifier, news: NewsItem? = null) {
 @Composable
 fun SecondScreenPreview() {
     MyApplicationTheme {
-        SecondScreen()
+        NewsDetail()
     }
 }

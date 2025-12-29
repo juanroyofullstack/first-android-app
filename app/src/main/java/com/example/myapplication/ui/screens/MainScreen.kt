@@ -14,12 +14,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.runtime.rememberCoroutineScope
 import android.util.Log
 import com.example.myapplication.ui.components.AppContent
 import com.example.myapplication.ui.components.Header
 import com.example.myapplication.BuildConfig
 import com.example.myapplication.model.NewsResponse
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
@@ -40,10 +42,10 @@ private val client = OkHttpClient.Builder()
 
 private val apiKey = BuildConfig.API_KEY
 
-private suspend fun fetchLatestNews(): NewsResponse = withContext(Dispatchers.IO) {
+private suspend fun fetchLatestNews(query: String = "Google"): NewsResponse = withContext(Dispatchers.IO) {
     Log.d("NewsFetch", "Llamando a gnews con OkHttp")
     val request = Request.Builder()
-        .url("https://gnews.io/api/v4/search?q=Google&lang=en&max=5&apikey=$apiKey")
+        .url("https://gnews.io/api/v4/search?q=$query&lang=en&max=5&apikey=$apiKey")
         .build()
 
     client.newCall(request).execute().use { response ->
@@ -61,13 +63,13 @@ fun MainScreen() {
     val (currentScreen, setCurrentScreen) = remember { mutableStateOf(Screen.Home) }
     var news by rememberSaveable { mutableStateOf<NewsResponse?>(null) }
     var loading by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         loading = true
-        val result = runCatching { fetchLatestNews() }
+        news = runCatching { fetchLatestNews() }
             .onFailure { e -> Log.e("MainScreen", "Error al obtener news", e) }
             .getOrNull()
-        news = result
         loading = false
     }
 
@@ -83,14 +85,23 @@ fun MainScreen() {
         }
     ) { innerPadding ->
         when (currentScreen) {
-            Screen.Home -> AppContent(innerPadding)
+            Screen.Home -> AppContent(innerPadding, onSearch = { query ->
+                scope.launch {
+                    loading = true
+                    news = runCatching { fetchLatestNews(query) }
+                        .onFailure { e -> Log.e("MainScreen", "Error al obtener news", e) }
+                        .getOrNull()
+                    loading = false
+
+                }
+            }, news)
             Screen.News -> {
                 when {
                     loading -> {
                         CircularProgressIndicator()
                     }
                     news?.articles?.firstOrNull() != null -> {
-                        SecondScreen(
+                        NewsDetail(
                             modifier = Modifier.padding(innerPadding),
                             news = news?.articles[0]
                         )
