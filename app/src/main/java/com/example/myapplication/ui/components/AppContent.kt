@@ -1,13 +1,11 @@
 package com.example.myapplication.ui.components
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
@@ -30,45 +28,41 @@ import com.example.myapplication.model.NewsResponse
 fun AppContent(innerPadding: PaddingValues, onSearch: (String) -> Unit, news: NewsResponse?) {
     var searchText by remember { mutableStateOf("") }
 
-    Column(
+    LazyColumn(
         modifier = Modifier
             .padding(innerPadding)
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp)
+            .padding(horizontal = 16.dp)
     ) {
-        OutlinedTextField(
-            value = searchText,
-            onValueChange = { searchText = it },
-            modifier = Modifier,
-            placeholder = { Text("Buscar...") },
-            singleLine = true,
-            trailingIcon = {
-                IconButton(onClick = { onSearch(searchText) }) {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "Buscar"
-                    )
+        item {
+            OutlinedTextField(
+                value = searchText,
+                onValueChange = { searchText = it },
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text("Buscar...") },
+                singleLine = true,
+                trailingIcon = {
+                    IconButton(onClick = { onSearch(searchText) }) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = "Buscar"
+                        )
+                    }
                 }
-            }
-        )
-        Text(
-            text = "Mi primera aplicación android",
-            style = MaterialTheme.typography.headlineLarge,
-            fontWeight = FontWeight.Bold
-        )
-        Text(
-            text = "Más contenido",
-            style = MaterialTheme.typography.bodySmall,
-        )
-        ImageWelcome()
+            )
+            Text(
+                text = "Mi primera aplicación android",
+                style = MaterialTheme.typography.headlineLarge,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = 16.dp)
+            )
+            Text(
+                text = "Más contenido",
+                style = MaterialTheme.typography.bodySmall,
+            )
+            ImageWelcome()
+        }
 
-    }
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 16.dp)
-    ) {
         items(news?.articles ?: emptyList()) { article ->
             Text(
                 text = article.title ?: "Sin título",
@@ -76,5 +70,5 @@ fun AppContent(innerPadding: PaddingValues, onSearch: (String) -> Unit, news: Ne
                 modifier = Modifier.padding(vertical = 8.dp)
             )
         }
-    }
+        }
 }
