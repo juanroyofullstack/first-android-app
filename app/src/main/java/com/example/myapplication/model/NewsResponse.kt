@@ -29,3 +29,15 @@ data class NewsResponse(
     val totalArticles: Int,
     val articles: List<NewsItem>
 )
+
+@Serializable
+data class NewsUiState(
+    val isLoading: Boolean = false,
+    val articles: List<NewsItem> = emptyList(),
+    val error: String? = null
+)
+
+sealed interface NewsIntent {
+    data class SearchNews(val query: String) : NewsIntent
+    // Podrías añadir más, como RefreshNews, etc.
+}

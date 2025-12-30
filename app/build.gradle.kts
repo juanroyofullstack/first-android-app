@@ -6,8 +6,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.0.21"
-}
+    alias(libs.plugins.kotlin.serialization)}
 
 android {
     namespace = "com.example.myapplication"
@@ -55,7 +54,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
-
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
 
     // Compose dependencies
     implementation(libs.androidx.activity.compose)
