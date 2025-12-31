@@ -1,8 +1,6 @@
-package com.example.myapplication.ui.screens
+package com.example.myapplication.viewmodel
 
 import android.util.Log
-import androidx.activity.result.launch
-import androidx.compose.animation.core.copy
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.BuildConfig
@@ -57,17 +55,31 @@ class NewsViewModel: ViewModel() {
             is NewsIntent.SearchNews -> {
                 fetchNews(intent.query)
             }
+            is NewsIntent.LoadInitialNews -> loadInitialNews()
+        }
+    }
+
+    private fun loadInitialNews() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
+
+            val result = runCatching { fetchLatestNews() }
+
+            _uiState.update {
+                result.fold(
+                    onSuccess = { response -> it.copy(isLoading = false, articles = response.articles) },
+                    onFailure = { error -> it.copy(isLoading = false, error = "Fallo al cargar noticias $error") }
+                )
+            }
         }
     }
 
     private fun fetchNews(query: String) {
         viewModelScope.launch {
-            // Actualiza el estado a "cargando"
             _uiState.update { it.copy(isLoading = true) }
 
             val result = runCatching { fetchLatestNews(query) } // Tu función de red
 
-            // Actualiza el estado con el resultado
             _uiState.update {
                 result.fold(
                     onSuccess = { response -> it.copy(isLoading = false, articles = response.articles) },

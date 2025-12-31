@@ -1,14 +1,13 @@
 package com.example.myapplication.ui.components
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
@@ -22,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -30,21 +30,28 @@ import com.example.myapplication.model.NewsUiState
 
 
 @Composable
-fun AppContent(innerPadding: PaddingValues, newsState: NewsUiState?, onSearch: (String) -> Unit) {
+fun AppContent(innerPadding: PaddingValues, newsState: NewsUiState, onSearch: (String) -> Unit) {
     var searchText by remember { mutableStateOf("") }
-    print(newsState)
-    if (newsState?.isLoading ?: false) {
-        CircularProgressIndicator()
-    } else if (newsState?.error != null) {
+
+    Column(
+        modifier = Modifier
+            .padding(innerPadding)
+            .fillMaxSize()
+            .padding(16.dp, 36.dp, 16.dp, 16.dp)
+    ) {
+        Spacer(modifier = Modifier.height(64.dp))
+
+    if (newsState.isLoading) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+    } else if (newsState.error != null) {
         Text(text = newsState.error, color = Color.Red)
     } else {
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .padding(horizontal = 16.dp, vertical = 16.dp)
-        ) {
-            Spacer(modifier = Modifier.height(64.dp))
             OutlinedTextField(
                     value = searchText,
                     onValueChange = { searchText = it },
@@ -60,6 +67,7 @@ fun AppContent(innerPadding: PaddingValues, newsState: NewsUiState?, onSearch: (
                         }
                     }
                 )
+            if(newsState.articles.isEmpty()) {
                 Text(
                     text = "Mi primera aplicación android",
                     style = MaterialTheme.typography.headlineLarge,
@@ -71,13 +79,15 @@ fun AppContent(innerPadding: PaddingValues, newsState: NewsUiState?, onSearch: (
                     style = MaterialTheme.typography.bodySmall,
                 )
                 ImageWelcome()
-
-            newsState?.articles?.forEach { article ->
-                Text(
-                    text = article.title ?: "Sin título",
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
+            }
+            if(newsState.articles.isNotEmpty()) {
+                newsState.articles.forEach { article ->
+                    Text(
+                        text = article.title,
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                }
             }
         }
     }

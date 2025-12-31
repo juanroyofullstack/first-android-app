@@ -39,5 +39,5 @@ data class NewsUiState(
 
 sealed interface NewsIntent {
     data class SearchNews(val query: String) : NewsIntent
-    // Podrías añadir más, como RefreshNews, etc.
+    data class LoadInitialNews(val dummy: Unit = Unit) : NewsIntent
 }

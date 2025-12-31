@@ -11,43 +11,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import com.example.myapplication.ui.components.AppContent
 import com.example.myapplication.ui.components.Header
 import com.example.myapplication.model.NewsIntent
-import com.example.myapplication.model.NewsUiState
-
-
-//private val json = Json { ignoreUnknownKeys = true }
-//
-//private val logging = HttpLoggingInterceptor().apply {
-//    if(BuildConfig.DEBUG) {
-//        level = HttpLoggingInterceptor.Level.BODY
-//    }
-//}
-//
-//private val client = OkHttpClient.Builder()
-//    .addInterceptor(logging)
-//    .build()
-//
-//private val apiKey = BuildConfig.API_KEY
-//
-//private suspend fun fetchLatestNews(query: String = "Google"): NewsUiState = withContext(Dispatchers.IO) {
-//    Log.d("NewsFetch", "Llamando a gnews con OkHttp")
-//    val request = Request.Builder()
-//        .url("https://gnews.io/api/v4/search?q=$query&lang=en&max=5&apikey=$apiKey")
-//        .build()
-//
-//    client.newCall(request).execute().use { response ->
-//        if (!response.isSuccessful) error("HTTP error ${response.code}: ${response.message}")
-//        val body = response.body?.string().orEmpty()
-//        json.decodeFromString<NewsUiState>(body)
-//    }
-//}
+import com.example.myapplication.viewmodel.NewsViewModel
 
 enum class Screen { Home, News }
 
@@ -55,9 +26,11 @@ enum class Screen { Home, News }
 @Composable
 fun MainScreen(viewModel: NewsViewModel = viewModel()) {
     val (currentScreen, setCurrentScreen) = remember { mutableStateOf(Screen.Home) }
-    var news by rememberSaveable { mutableStateOf<NewsUiState?>(null) }
-    var loading by remember { mutableStateOf(false) }
     val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.handleIntent(NewsIntent.LoadInitialNews())
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -81,13 +54,13 @@ fun MainScreen(viewModel: NewsViewModel = viewModel()) {
 
             Screen.News -> {
                 when {
-                    loading -> {
+                    uiState.isLoading -> {
                         CircularProgressIndicator()
                     }
-                    news?.articles?.firstOrNull() != null -> {
+                    uiState.articles.firstOrNull() != null -> {
                         NewsDetail(
                             modifier = Modifier.padding(innerPadding),
-                            news = news?.articles[0]
+                            news = uiState.articles[0]
                         )
                     }
                     else -> Text("No se pudo cargar la noticia")
