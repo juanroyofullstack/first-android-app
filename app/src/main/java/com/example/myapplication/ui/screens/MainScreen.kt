@@ -9,8 +9,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.LaunchedEffect
@@ -18,14 +16,17 @@ import androidx.compose.runtime.collectAsState
 import com.example.myapplication.ui.components.AppContent
 import com.example.myapplication.ui.components.Header
 import com.example.myapplication.model.NewsIntent
+import com.example.myapplication.model.Screen
 import com.example.myapplication.viewmodel.NewsViewModel
-
-enum class Screen { Home, News }
+import com.example.myapplication.viewmodel.CurrentScreenModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(viewModel: NewsViewModel = viewModel()) {
-    val (currentScreen, setCurrentScreen) = remember { mutableStateOf(Screen.Home) }
+fun MainScreen(
+    viewModel: NewsViewModel = viewModel(),
+    currentScreenViewModel: CurrentScreenModel = viewModel()
+) {
+    val currentScreen by currentScreenViewModel.currentScreen.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
@@ -37,9 +38,10 @@ fun MainScreen(viewModel: NewsViewModel = viewModel()) {
         topBar = {
             Header(
             onOption1 = {
-                setCurrentScreen(Screen.Home)
-            }, onOption2 = {
-                setCurrentScreen(Screen.News)
+                currentScreenViewModel.setScreen(Screen.Home)
+            },
+            onOption2 = {
+                currentScreenViewModel.setScreen(Screen.News)
             })
         }
     ) { innerPadding ->

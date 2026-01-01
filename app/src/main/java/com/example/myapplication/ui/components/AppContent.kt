@@ -41,7 +41,22 @@ fun AppContent(innerPadding: PaddingValues, newsState: NewsUiState, onSearch: (S
     ) {
         Spacer(modifier = Modifier.height(64.dp))
 
-    if (newsState.isLoading) {
+        OutlinedTextField(
+            value = searchText,
+            onValueChange = { searchText = it },
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = { Text("Buscar...") },
+            singleLine = true,
+            trailingIcon = {
+                IconButton(onClick = { onSearch(searchText) }) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Buscar"
+                    )
+                }
+            }
+        )
+        if (newsState.isLoading) {
         Box(
             modifier = Modifier
                 .fillMaxSize(),
@@ -52,21 +67,6 @@ fun AppContent(innerPadding: PaddingValues, newsState: NewsUiState, onSearch: (S
     } else if (newsState.error != null) {
         Text(text = newsState.error, color = Color.Red)
     } else {
-            OutlinedTextField(
-                    value = searchText,
-                    onValueChange = { searchText = it },
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = { Text("Buscar...") },
-                    singleLine = true,
-                    trailingIcon = {
-                        IconButton(onClick = { onSearch(searchText) }) {
-                            Icon(
-                                imageVector = Icons.Default.Search,
-                                contentDescription = "Buscar"
-                            )
-                        }
-                    }
-                )
             if(newsState.articles.isEmpty()) {
                 Text(
                     text = "Mi primera aplicación android",
