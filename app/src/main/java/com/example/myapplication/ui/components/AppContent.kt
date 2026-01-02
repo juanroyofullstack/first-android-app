@@ -28,17 +28,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.myapplication.model.NewsIntent
+import com.example.myapplication.model.NewsItem
 import com.example.myapplication.model.NewsUiState
 import com.example.myapplication.viewmodel.NewsViewModel
 import com.example.myapplication.ui.screens.NewsDetail
 
 @Composable
 fun AppContent(
-        innerPadding: PaddingValues,
-        newsState: NewsUiState,
-        onSearch: (String) -> Unit,
-        viewModel: NewsViewModel = viewModel(),
+    innerPadding: PaddingValues,
+    newsState: NewsUiState,
+    onSearch: (String) -> Unit,
+    onNewsClick: (NewsItem) -> Unit,
+    viewModel: NewsViewModel = viewModel(),
 ) {
     var searchText by remember { mutableStateOf("") }
 
@@ -95,9 +96,7 @@ fun AppContent(
                         text = article.title,
                         style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier.padding(vertical = 8.dp).clickable {
-                            viewModel.handleIntent(
-                                NewsIntent.SelectedNewsDetail(article)
-                            )
+                            onNewsClick(article)
                         },
                     )
                 }
