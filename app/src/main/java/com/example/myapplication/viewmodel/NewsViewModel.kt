@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.BuildConfig
 import com.example.myapplication.model.NewsIntent
+import com.example.myapplication.model.NewsItem
 import com.example.myapplication.model.NewsResponse
 import com.example.myapplication.model.NewsUiState
 import kotlinx.coroutines.Dispatchers
@@ -15,9 +16,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
+import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.logging.HttpLoggingInterceptor
 
 private val json = Json { ignoreUnknownKeys = true }
 
@@ -56,7 +57,16 @@ class NewsViewModel: ViewModel() {
                 fetchNews(intent.query)
             }
             is NewsIntent.LoadInitialNews -> loadInitialNews()
+            is NewsIntent.SelectedNewsDetail -> selectedNewsDetail(intent.article)
         }
+    }
+
+    private fun selectedNewsDetail(article: NewsItem) {
+        _uiState.update { it.copy(selectedArticleDetail = article) }
+    }
+
+    private fun unselectNewsDetail() {
+        _uiState.update { it.copy(selectedArticleDetail = null) }
     }
 
     private fun loadInitialNews() {
@@ -78,7 +88,7 @@ class NewsViewModel: ViewModel() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
 
-            val result = runCatching { fetchLatestNews(query) } // Tu función de red
+            val result = runCatching { fetchLatestNews(query) }
 
             _uiState.update {
                 result.fold(

@@ -1,5 +1,6 @@
 package com.example.myapplication.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,11 +27,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myapplication.model.NewsIntent
 import com.example.myapplication.model.NewsUiState
-
+import com.example.myapplication.viewmodel.NewsViewModel
+import com.example.myapplication.ui.screens.NewsDetail
 
 @Composable
-fun AppContent(innerPadding: PaddingValues, newsState: NewsUiState, onSearch: (String) -> Unit) {
+fun AppContent(
+        innerPadding: PaddingValues,
+        newsState: NewsUiState,
+        onSearch: (String) -> Unit,
+        viewModel: NewsViewModel = viewModel(),
+) {
     var searchText by remember { mutableStateOf("") }
 
     Column(
@@ -85,7 +94,11 @@ fun AppContent(innerPadding: PaddingValues, newsState: NewsUiState, onSearch: (S
                     Text(
                         text = article.title,
                         style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.padding(vertical = 8.dp)
+                        modifier = Modifier.padding(vertical = 8.dp).clickable {
+                            viewModel.handleIntent(
+                                NewsIntent.SelectedNewsDetail(article)
+                            )
+                        },
                     )
                 }
             }

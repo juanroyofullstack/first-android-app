@@ -32,12 +32,14 @@ data class NewsResponse(
 
 @Serializable
 data class NewsUiState(
-    val isLoading: Boolean = false,
     val articles: List<NewsItem> = emptyList(),
-    val error: String? = null
+    val isLoading: Boolean = false,
+    val error: String? = null,
+    val selectedArticleDetail: NewsItem? = null
 )
 
 sealed interface NewsIntent {
     data class SearchNews(val query: String) : NewsIntent
     data class LoadInitialNews(val dummy: Unit = Unit) : NewsIntent
+    data class SelectedNewsDetail(val article: NewsItem) : NewsIntent
 }
