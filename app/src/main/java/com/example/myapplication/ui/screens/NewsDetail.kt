@@ -24,16 +24,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.model.NewsItem
+import com.example.myapplication.ui.theme.MyApplicationTheme
 
 @Composable
 fun NewsDetail(modifier: Modifier = Modifier, news: NewsItem? = null, onBack: () -> Unit) {
     Surface(modifier = modifier.padding(16.dp)) {
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState())
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -47,7 +47,7 @@ fun NewsDetail(modifier: Modifier = Modifier, news: NewsItem? = null, onBack: ()
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "Detalle",
+                    text = "Back",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold
                 )
@@ -56,26 +56,26 @@ fun NewsDetail(modifier: Modifier = Modifier, news: NewsItem? = null, onBack: ()
             Spacer(modifier = Modifier.height(16.dp))
 
             if (!news?.title.isNullOrBlank()) {
-            Text(
-                text = news.title,
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold
-            )
+                Text(
+                    text = news.title,
+                    style = MaterialTheme.typography.headlineLarge,
+                    fontWeight = FontWeight.Bold
+                )
             }
             if (!news?.author.isNullOrBlank()) {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = news.author,
-                style = MaterialTheme.typography.titleMedium
-            )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = news.author,
+                    style = MaterialTheme.typography.titleMedium
+                )
             }
             if (!news?.description.isNullOrBlank()) {
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = news.description,
-                style = MaterialTheme.typography.bodyLarge,
-                textAlign = TextAlign.Justify
-            )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = news.description,
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Justify
+                )
             }
         }
     }

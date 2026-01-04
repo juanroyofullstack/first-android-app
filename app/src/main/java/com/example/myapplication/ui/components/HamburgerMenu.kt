@@ -5,6 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -13,13 +14,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.material3.ExperimentalMaterial3Api
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HamburgerMenu(
-    onOption1: () -> Unit = {},
-    onOption2: () -> Unit = {}
+    onHome: () -> Unit = {},
+    onDetailView: (() -> Unit)? = null
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -38,17 +38,19 @@ fun HamburgerMenu(
             DropdownMenuItem(
                 text = { Text("Home") },
                 onClick = {
-                    onOption1()
+                    onHome()
                     expanded = false
                 }
             )
-            DropdownMenuItem(
-                text = { Text("Segunda vista") },
-                onClick = {
-                    onOption2()
-                    expanded = false
-                }
-            )
+            if (onDetailView != null) {
+                DropdownMenuItem(
+                    text = { Text("Segunda vista") },
+                    onClick = {
+                        onDetailView()
+                        expanded = false
+                    }
+                )
+            }
         }
     }
 }

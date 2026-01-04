@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -15,16 +16,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.myapplication.ui.components.AppContent
-import com.example.myapplication.ui.screens.NewsDetail
-import com.example.myapplication.ui.theme.MyApplicationTheme
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.model.NewsIntent
 import com.example.myapplication.model.NewsItem
+import com.example.myapplication.ui.components.AppContent
 import com.example.myapplication.ui.components.Header
+import com.example.myapplication.ui.screens.NewsDetail
+import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.viewmodel.NewsViewModel
 
 class MainActivity : ComponentActivity() {
@@ -54,12 +55,18 @@ fun MyAppNavHost(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             Header(
-                onOption1 = {
+                onHome = {
                     navController.navigate("home")
                 },
-                onOption2 = {
-                    navController.navigate("detail")
-                })
+                onDetailView = if (uiState.selectedArticleDetail != null) {
+                    { navController.navigate("detail") }
+                } else {
+                    null
+                },
+                onProfile = {
+                    navController.navigate("profile")
+                }
+            )
         }
     ) { innerPadding ->
         NavHost(
@@ -85,6 +92,9 @@ fun MyAppNavHost(
                     news = uiState.selectedArticleDetail,
                     onBack = { navController.popBackStack() }
                 )
+            }
+            composable("profile") {
+                Text(text = "first try")
             }
         }
     }
