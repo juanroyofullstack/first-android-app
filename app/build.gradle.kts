@@ -6,7 +6,10 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.kotlin.serialization)}
+    alias(libs.plugins.kotlin.serialization)
+    id("com.google.dagger.hilt.android")
+    id("kotlin-kapt")
+}
 
 android {
     namespace = "com.example.myapplication"
@@ -56,6 +59,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.lifecycle.viewmodel.compose)
     implementation(libs.navigation.compose)
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     // Compose dependencies
     implementation(libs.androidx.activity.compose)
@@ -64,6 +68,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation("com.google.dagger:hilt-android:2.57.1")
+    kapt("com.google.dagger:hilt-android-compiler:2.57.1")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

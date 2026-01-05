@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -12,10 +13,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -27,14 +27,17 @@ import com.example.myapplication.ui.components.Header
 import com.example.myapplication.ui.screens.NewsDetail
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.viewmodel.NewsViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private val viewModel: NewsViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             MyApplicationTheme {
-                MyAppNavHost()
+                MyAppNavHost(viewModel = viewModel)
             }
         }
     }
@@ -42,9 +45,10 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MyAppNavHost(
-    viewModel: NewsViewModel = viewModel(),
+    viewModel: NewsViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState = viewModel.uiState.collectAsState()
+    val state = uiState.value
     val navController: NavHostController = rememberNavController()
 
     LaunchedEffect(Unit) {
@@ -58,7 +62,7 @@ fun MyAppNavHost(
                 onHome = {
                     navController.navigate("home")
                 },
-                onDetailView = if (uiState.selectedArticleDetail != null) {
+                onDetailView = if (state.selectedArticleDetail != null) {
                     { navController.navigate("detail") }
                 } else {
                     null
@@ -76,7 +80,7 @@ fun MyAppNavHost(
             composable("home") {
                 AppContent(
                     innerPadding = PaddingValues(),
-                    newsState = uiState,
+                    newsState = state,
                     onSearch = { query ->
                         viewModel.handleIntent(NewsIntent.SearchNews(query))
                     },
@@ -89,7 +93,7 @@ fun MyAppNavHost(
             composable("detail") {
                 NewsDetail(
                     modifier = Modifier.padding(innerPadding),
-                    news = uiState.selectedArticleDetail,
+                    news = state.selectedArticleDetail,
                     onBack = { navController.popBackStack() }
                 )
             }
