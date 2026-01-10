@@ -1,5 +1,6 @@
-package com.example.myapplication.ui.components
+package com.example.myapplication.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +33,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.model.NewsItem
 import com.example.myapplication.model.NewsUiState
+import com.example.myapplication.ui.components.ImageWelcome
 
 @Composable
 fun AppContent(
@@ -101,12 +103,18 @@ fun AppContent(
                 newsState.articles.forEach { article ->
                     Text(
                         text = article.title,
-                        style = MaterialTheme.typography.bodyLarge,
+                        style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier
-                            .padding(vertical = 8.dp)
+                            .padding(vertical = 16.dp)
                             .clickable {
                                 onNewsClick(article)
                             },
+                    )
+                    Spacer(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(1.dp)
+                            .background(MaterialTheme.colorScheme.tertiary)
                     )
                 }
             }

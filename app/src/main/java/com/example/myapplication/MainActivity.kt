@@ -22,8 +22,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.model.NewsIntent
 import com.example.myapplication.model.NewsItem
-import com.example.myapplication.ui.components.AppContent
 import com.example.myapplication.ui.components.Header
+import com.example.myapplication.ui.screens.AppContent
 import com.example.myapplication.ui.screens.NewsDetail
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.viewmodel.NewsViewModel

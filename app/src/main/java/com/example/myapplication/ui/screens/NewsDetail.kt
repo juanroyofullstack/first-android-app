@@ -1,5 +1,6 @@
 package com.example.myapplication.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -73,6 +74,41 @@ fun NewsDetail(modifier: Modifier = Modifier, news: NewsItem? = null, onBack: ()
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = news.description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Justify,
+                    color = MaterialTheme.colorScheme.tertiary
+                )
+            }
+            if (!news?.author.isNullOrBlank() && !news.date.isNullOrBlank()) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Text(
+                        text = news.author,
+                        style = MaterialTheme.typography.bodySmall,
+                        textAlign = TextAlign.Justify,
+                        color = MaterialTheme.colorScheme.tertiary
+                    )
+                    Spacer(
+                        modifier = Modifier
+                            .padding(horizontal = 8.dp)
+                            .height(16.dp)
+                            .width(1.dp)
+                            .background(MaterialTheme.colorScheme.tertiary)
+                    )
+                    Text(
+                        text = news.date,
+                        style = MaterialTheme.typography.bodySmall,
+                        textAlign = TextAlign.Justify,
+                        color = MaterialTheme.colorScheme.tertiary
+                    )
+                }
+            }
+            if (!news?.content.isNullOrBlank()) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = news.content,
                     style = MaterialTheme.typography.bodyLarge,
                     textAlign = TextAlign.Justify
                 )
