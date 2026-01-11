@@ -100,7 +100,7 @@ fun AppContent(
                 ImageWelcome()
             }
             if (newsState.articles.isNotEmpty()) {
-                newsState.articles.forEach { article ->
+                newsState.articles.forEachIndexed { index, article ->
                     Text(
                         text = article.title,
                         style = MaterialTheme.typography.titleLarge,
@@ -110,12 +110,14 @@ fun AppContent(
                                 onNewsClick(article)
                             },
                     )
-                    Spacer(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(1.dp)
-                            .background(MaterialTheme.colorScheme.tertiary)
-                    )
+                    if (index !== newsState.articles.size - 1) {
+                        Spacer(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(1.dp)
+                                .background(MaterialTheme.colorScheme.tertiary)
+                        )
+                    }
                 }
             }
         }

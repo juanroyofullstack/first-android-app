@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -24,6 +23,7 @@ import com.example.myapplication.model.NewsIntent
 import com.example.myapplication.model.NewsItem
 import com.example.myapplication.ui.components.Header
 import com.example.myapplication.ui.screens.AppContent
+import com.example.myapplication.ui.screens.LoginForm
 import com.example.myapplication.ui.screens.NewsDetail
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.viewmodel.NewsViewModel
@@ -98,7 +98,7 @@ fun MyAppNavHost(
                 )
             }
             composable("profile") {
-                Text(text = "first try")
+                LoginForm(modifier = Modifier.padding(innerPadding))
             }
         }
     }
