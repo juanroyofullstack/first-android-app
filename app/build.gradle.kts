@@ -59,6 +59,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.lifecycle.viewmodel.compose)
     implementation(libs.navigation.compose)
+    implementation(libs.datastore)
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     // Compose dependencies
