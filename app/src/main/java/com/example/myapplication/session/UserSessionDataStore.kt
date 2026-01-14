@@ -5,14 +5,10 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.example.myapplication.model.UserSession
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-data class UserSession(
-    val isLoggedIn: Boolean = false,
-    val email: String = "",
-    val name: String = ""
-)
 
 private val Context.dataStore by preferencesDataStore(name = "user_session")
 
@@ -36,7 +32,7 @@ class UserSessionDataStore(private val context: Context) {
         context.dataStore.edit { prefs ->
             prefs[Keys.IS_LOGGED_IN] = session.isLoggedIn
             prefs[Keys.EMAIL] = session.email
-            prefs[Keys.NAME] = session.name
+            prefs[Keys.NAME] = session.name ?: ""
         }
     }
 
